@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.Mapper.Student.stuMapper">
+
+    <select id="listSearchClass" resultType="com.example.demo.pojo.Class">
+    select *
+    from (
+            select tname,course.tid,cid,cname,concat(bname,b_room) as c_address,c_credit,c_info,c_sum,c_time,c_grade,c_num
+            from course left join teacher on teacher.tid=course.tid
+            left join build on course.c_address=build.bid
+            where cstatus=2 and cid not in(select cid
+                                            from student_course
+                                            where sid=#{sid}
+                                            )) as Stuclass
+    <where>
+        <if test="cid!=null">
+            and cid like concat('%',#{cid},'%')
+        </if>
+        <if test="tname!=null">
+            and tname like concat('%',#{tname},'%')
+        </if>
+        <if test="cname!=null">
+            and  cname like concat('%',#{cname},'%')
+        </if>
+        <if test="cAddress!=null">
+            and c_address like concat('%',#{cAddress},'%')
+        </if>
+    </where>
+    </select>
+    <select id="listClass" resultType="com.example.demo.pojo.Class" statementType="CALLABLE" parameterType="java.lang.String">
+        select tname,cid,cname,concat(bname,b_room) as c_address,c_credit,c_info,c_sum,c_time,c_grade,c_num
+        from course left join teacher on teacher.tid=course.tid
+                    left join build on course.c_address=build.bid
+        where cstatus=2 and
+            cid not in(select cid
+                       from student_course
+                       where sid=#{sid}
+            )
+    </select>
+    <select id="listCurrentSelectedClass" resultType="com.example.demo.pojo.Class">
+        select tname,cid,cname,concat(bname,b_room) as c_address,c_credit,c_info,c_sum,c_time,c_grade,c_num,cstatus
+        from course left join teacher on teacher.tid=course.tid
+                    left join build on course.c_address=build.bid
+        where cstatus>1 and cstatus &lt; 4 and
+            cid  in(select cid
+                    from student_course
+                    where sid=#{sid}
+            )
+    </select>
+    <select id="listCurrentSelectedClasses" resultType="com.example.demo.pojo.Class">
+        select tname,cid,cname,concat(bname,b_room) as c_address,c_credit,c_info,c_sum,c_time,c_grade,c_num,cstatus
+        from course left join teacher on teacher.tid=course.tid
+                    left join build on course.c_address=build.bid
+        where cstatus>1 and cstatus &lt; 4 and
+            cid  in(select cid
+                    from student_course
+                    where sid=#{sid}
+            )
+    </select>
+    <select id="listSelectedClasses" resultType="com.example.demo.pojo.Class">
+        select tname,course.cid,cname,concat(bname,b_room) as c_address,c_credit,c_info,c_time,c_grade,score
+        from course left join teacher on teacher.tid=course.tid
+                    left join build on course.c_address=build.bid
+                    left join score on course.cid=score.cid
+        where score.sid=#{sid} and course.cid  in(select cid
+                    from student_course
+                    where sid=#{sid}
+            )
+        order by c_grade desc
+    </select>
+    <select id="ListSelectedCourseSearch" resultType="com.example.demo.pojo.Class">
+select *
+from(
+            select tname,course.cid,cname,concat(bname,b_room) as c_address,c_credit,c_info,c_time,c_grade,score
+            from course left join teacher on teacher.tid=course.tid
+                        left join build on course.c_address=build.bid
+                        left join score on course.cid=score.cid
+            where  course.cid  in(select cid
+                                  from student_course
+                                  where sid=#{sid}
+            )
+            )as Stuclass
+        <where>
+            <if test="cid!=null">
+                and cid like concat('%',#{cid},'%')
+            </if>
+            <if test="tname!=null">
+                and tname like concat('%',#{tname},'%')
+            </if>
+            <if test="cname!=null">
+                and  cname like concat('%',#{cname},'%')
+            </if>
+            <if test="cAddress!=null">
+                and c_address like concat('%',#{cAddress},'%')
+            </if>
+        </where>
+    </select>
+</mapper>

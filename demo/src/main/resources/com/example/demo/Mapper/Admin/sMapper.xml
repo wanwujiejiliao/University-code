@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.Mapper.Admin.sMapper">
+<!--有图像更新-->
+    <update id="updateStuByid" >
+        update tsc.dbo.student
+        <set>
+            <if test="studata.sid !=null">
+                sid=#{studata.sid},
+            </if>
+            <if test="studata.sname !=null">
+                sname=#{studata.sname},
+            </if>
+            <if test="studata.ssex !=null">
+                ssex=#{studata.ssex},
+            </if>
+            <if test="studata.scol !=null">
+                scol=#{studata.scol},
+            </if>
+            <if test="studata.sclass !=null">
+                sclass=#{studata.sclass},
+            </if>
+            <if test="studata.sbirth !=null">
+                sbirth=#{studata.sbirth},
+            </if>
+            <if test="studata.spwd !=null">
+                spwd=#{studata.spwd},
+            </if>
+            <if test="id!=null">
+                sphoto=#{id},
+            </if>
+            <if test="studata.sgrade !=null">
+                sgrade=#{studata.sgrade}
+            </if>
+        </set>
+        where sid=#{studata.sid}
+    </update>
+<!--    无图像更新-->
+    <update id="updateStu" >
+        update tsc.dbo.student
+        <set>
+            <if test="sid!=null">
+                sid=#{sid},
+            </if>
+            <if test="sname!=null">
+                sname=#{sname},
+            </if>
+            <if test="ssex!=null">
+                ssex=#{ssex},
+            </if>
+            <if test="scol!=null">
+                scol=#{scol},
+            </if>
+            <if test="sclass!=null">
+                sclass=#{sclass},
+            </if>
+            <if test="sbirth!=null">
+                sbirth=#{sbirth},
+            </if>
+            <if test="spwd !=null">
+                spwd=#{spwd},
+            </if>
+            <if test="sgrade!=null">
+                sgrade=#{sgrade}
+            </if>
+        </set>
+        where sid=#{sid}
+    </update>
+<!--    模糊查询-->
+    <select id="listSearch" resultType="com.example.demo.pojo.Student">
+        select *
+        from stu
+        <where>
+            <if test="sid!=null">
+                sid like concat('%',#{sid},'%')
+            </if>
+            <if test="sname!=null">
+                and sname like concat('%',#{sname},'%')
+            </if>
+            <if test="ssex!=null and ssex!=''">
+                and  ssex = #{ssex}
+            </if>
+            <if test="scol!=null and scol!=''">
+                and scol=#{scol}
+            </if>
+            <if test="sgrade!=null and sgrade!=''">
+                and sgrade=#{sgrade}
+            </if>
+            <if test="sclass!=null">
+                and sclass=#{sclass}
+            </if>
+        </where>
+    </select>
+</mapper>

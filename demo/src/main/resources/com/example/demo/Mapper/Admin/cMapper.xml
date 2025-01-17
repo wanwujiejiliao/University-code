@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.Mapper.Admin.cMapper">
+
+    <select id="listSearch0" resultType="com.example.demo.pojo.Class">
+        select *
+        from admin0
+        <where>
+            <if test="cid!=null">
+                cid like concat('%',#{cid},'%')
+            </if>
+            <if test="tname!=null">
+                and tname like concat('%',#{tname},'%')
+            </if>
+            <if test="cname!=null">
+                and  cname like concat('%',#{cname},'%')
+            </if>
+            <if test="cAddress!=null">
+                and c_address like concat('%',#{cAddress},'%')
+            </if>
+        </where>
+    </select>
+    <select id="listSearch5" resultType="com.example.demo.pojo.Class">
+        select *
+        from admin5
+        <where>
+            <if test="cid!=null">
+                cid like concat('%',#{cid},'%')
+            </if>
+            <if test="tname!=null">
+                and tname like concat('%',#{tname},'%')
+            </if>
+            <if test="cname!=null">
+                and  cname like concat('%',#{cname},'%')
+            </if>
+            <if test="cAddress!=null">
+                and c_address like concat('%',#{cAddress},'%')
+            </if>
+        </where>
+    </select>
+    <select id="listSearch_1" resultType="com.example.demo.pojo.Class">
+        select *
+        from tsc.dbo.admin_1
+        <where>
+            <if test="cid!=null">
+                cid like concat('%',#{cid},'%')
+            </if>
+            <if test="tname!=null">
+                and tname like concat('%',#{tname},'%')
+            </if>
+            <if test="cname!=null">
+                and  cname like concat('%',#{cname},'%')
+            </if>
+            <if test="cAddress!=null">
+                and c_address like concat('%',#{cAddress},'%')
+            </if>
+        </where>
+    </select>
+</mapper>

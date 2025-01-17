@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.Mapper.Admin.tMapper">
+    <!--有图像更新-->
+    <update id="updateTeaByid" >
+        update tsc.dbo.teacher
+        <set>
+            <if test="teadata.tname !=null">
+                tname=#{teadata.tname},
+            </if>
+            <if test="tsex !=null">
+                tsex=#{tsex},
+            </if>
+            <if test="tcol !=null">
+                tcol=#{tcol},
+            </if>
+            <if test="tbirth!=null">
+                tbirth=#{tbirth},
+            </if>
+            <if test="tpwd !=null">
+                tpwd=#{tpwd},
+            </if>
+            <if test="id!=null">
+                tphoto=#{id}
+            </if>
+        </set>
+        where tid=#{tid}
+    </update>
+    <!--    无图像更新-->
+    <update id="updateTea" >
+        update tsc.dbo.teacher
+        <set>
+            <if test="tname!=null">
+                tname=#{tname},
+            </if>
+            <if test="tsex!=null">
+                tsex=#{tsex},
+            </if>
+            <if test="tcol!=null">
+                tcol=#{tcol},
+            </if>
+            <if test="tbirth!=null">
+                tbirth=#{tbirth},
+            </if>
+            <if test="tpwd !=null">
+                tpwd=#{tpwd}
+            </if>
+        </set>
+        where tid=#{tid}
+    </update>
+    <!--    模糊查询-->
+    <select id="listSearch" resultType="com.example.demo.pojo.Teacher">
+        select *
+        from tch
+        <where>
+            <if test="tid!=null">
+                tid like concat('%',#{tid},'%')
+            </if>
+            <if test="tname!=null and tname!=''">
+                and tname like concat('%',#{tname},'%')
+            </if>
+            <if test="tsex!=null and tsex!=''">
+                and  tsex = #{tsex}
+            </if>
+            <if test="tcol!=null and tcol!=''">
+                and tcol=#{tcol}
+            </if>
+        </where>
+    </select>
+</mapper>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.Mapper.Teacher.teaMapper">
+    <insert id="increaseCourse">
+        insert
+        into tsc.dbo.teacher_course(tid,tdo,cid,cname,c_address,c_time,c_credit,c_info,c_sum)
+        values(#{tid},'添加',#{cid},#{cname},#{cAddress},#{cTime},#{cCredit},#{cInfo},#{cSum})
+    </insert>
+    <insert id="deleteCourse">
+        insert
+        into tsc.dbo.teacher_course(tid,tdo,cid,cname,c_address,c_time,c_credit,c_info,c_sum)
+        select  tid,'删除',cid,cname,c_address,c_time,c_credit,c_info,c_sum
+        from tsc.dbo.course
+        where tid=#{tid} and cid=#{cid};
+        update  tsc.dbo.course
+        set tsc.dbo.course.cstatus=0
+        where cid=#{cid}
+    </insert>
+    <update id="importCourseScore">
+        <foreach collection="scoreList" item="item" index="index" separator=";">
+            update tsc.dbo.score
+            set score=#{item.score}
+            <where>
+                cid=#{item.cid} and sid=#{item.sid}
+            </where>
+        </foreach>
+    </update>
+    <select id="listUnderReviewCourse" resultType="com.example.demo.pojo.Class">
+        select tcid,tid,cid,cname,concat(bname,b_room) as c_address,c_credit,c_info,c_sum,c_time,tc_time,tdo
+        from tsc.dbo.teacher_course
+             left join build on teacher_course.c_address=build.bid
+        where ado=0 and tid=#{tid}
+
+    </select>
+    <select id="listUnApprovedCourse" resultType="com.example.demo.pojo.Class">
+        select cid,cname,concat(bname,b_room) as c_address,c_credit,c_info,c_sum,c_time,tc_time,tdo,a_info
+        from tsc.dbo.teacher_course
+                 left join build on teacher_course.c_address=build.bid
+        where ado=-1 and tid=#{tid}
+        order by tc_time desc
+    </select>
+    <select id="listApprovedCourse" resultType="com.example.demo.pojo.Class">
+        select cid,cname,concat(bname,b_room) as c_address,c_credit,c_info,c_sum,c_time,c_grade,cstatus
+        from tsc.dbo.course
+                 left join build on course.c_address=build.bid
+        where cstatus!=0 and tid=#{tid} and cstatus!=-1
+        order by c_grade desc
+    </select>
+    <select id="exportCourseScore" resultType="com.example.demo.pojo.Score">
+        select score.cid,cname,score.sid,sname,score
+        from  score left join tsc.dbo.course on score.cid=course.cid
+                    left join tsc.dbo.student on score.sid=student.sid
+        where score.cid=#{cid}
+        order by cid desc
+    </select>
+    <select id="timeTable" resultType="com.example.demo.pojo.Class">
+        select cid,cname,concat(bname,b_room) as c_address,c_credit,c_info,c_time,cstatus
+        from course left join build on course.c_address=build.bid
+        where cstatus>0 and tid=#{tid} and cstatus &lt; 4
+        union
+        select cid,cname,concat(bname,b_room) as c_address,c_credit,c_info,c_time,0 as cstatus
+        from tsc.dbo.teacher_course left join build on teacher_course.c_address=build.bid
+        where ado=0 and tid=#{tid} and tdo='添加'
+    </select>
+    <select id="selectNotVacanrRoom" resultType="com.example.demo.pojo.Build">
+        select cid,bname,b_room,c_time,1 as status
+        from course left join build on course.c_address=build.bid
+        where cstatus>0 and cstatus &lt; 4  and bname=#{bname}
+        union
+        select cid,bname,b_room,c_time,0 as status
+        from tsc.dbo.teacher_course left join build on teacher_course.c_address=build.bid
+        where ado=0 and bname=#{bname} and tdo='添加'
+    </select>
+    <select id="selectNotVacanrRoom0" resultType="com.example.demo.pojo.Build">
+        select cid,bname,b_room,c_time,1 as status
+        from course left join build on course.c_address=build.bid
+        where cstatus>2 and cstatus &lt; 4  and bname=#{bname}
+    </select>
+</mapper>
